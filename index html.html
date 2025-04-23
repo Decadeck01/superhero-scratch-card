@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discover the Secret Superhero Inside You!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0b0c10;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #66fcf1;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #scratch-container {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      background: #1f2833;
+      border: 2px solid #45a29e;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+    #message {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Discover the Secret Superhero Inside You!</h1>
+  <div id="scratch-container">
+    <div id="message"></div>
+    <canvas id="scratch"></canvas>
+  </div>  <script>
+    const superheroes = [
+      "You are Spider-Man – quick-witted, loyal, and always ready to help others, even under pressure.",
+      "You are Iron Man – brilliant, bold, and full of unstoppable creativity and confidence.",
+      "You are Black Panther – noble, wise, and a true leader who stands up for what's right.",
+      "You are Captain Marvel – fearless, strong, and always pushing boundaries to protect others.",
+      "You are Scarlet Witch – powerful, complex, and full of deep empathy and inner strength.",
+      "You are Captain America – principled, brave, and always leading with honor and heart.",
+      "You are Doctor Strange – intelligent, disciplined, and a master of focus and inner peace.",
+      "You are Black Widow – clever, calm under pressure, and fiercely independent.",
+      "You are Thor – mighty, determined, and full of heart (and lightning).",
+      "You are Hawkeye – sharp, dependable, and always watching your team’s back."
+    ];
+
+    document.getElementById('message').innerText = superheroes[Math.floor(Math.random() * superheroes.length)];
+
+    const canvas = document.getElementById('scratch');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('scratch-container');
+
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+
+    ctx.fillStyle = '#c5c6c7';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'destination-out';
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+
+    let drawing = false;
+
+    function startDrawing(e) {
+      e.preventDefault();
+      drawing = true;
+    }
+
+    function stopDrawing(e) {
+      e.preventDefault();
+      drawing = false;
+    }
+
+    function draw(e) {
+      e.preventDefault();
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  </script></body>
+</html>
