@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discover Your Inner Superhero</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #e60000;
+      margin-bottom: 20px;
+    }
+    #scratch-area {
+      position: relative;
+      width: 300px;
+      height: 150px;
+      margin: 0 auto;
+      background: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #superhero-name {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      display: none;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .card {
+      background: #ffffff;
+      border: 2px dashed #e60000;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Discover the Secret Superhero Inside You</h1>
+
+  <div class="card">
+    <div id="scratch-area">
+      <canvas id="scratch-canvas" width="300" height="150"></canvas>
+      <div id="message" style="padding-top: 55px; font-size: 1.2rem;">Scratch Here!</div>
+    </div>
+    <div id="superhero-name"></div>
+  </div>
+
+  <script>
+    const superheroes = [
+      { name: "Iron Man", quality: "Intelligent, Innovative, Charismatic" },
+      { name: "Captain America", quality: "Loyal, Brave, Inspirational" },
+      { name: "Black Panther", quality: "Wise, Noble, Determined" },
+      { name: "Spider-Man", quality: "Youthful, Responsible, Agile" },
+      { name: "Scarlet Witch", quality: "Powerful, Emotional, Complex" },
+      { name: "Thor", quality: "Strong, Honorable, Loyal" },
+      { name: "Doctor Strange", quality: "Smart, Calm, Master of Mystics" },
+      { name: "Hulk", quality: "Strong, Protective, Fierce" },
+      { name: "Black Widow", quality: "Skilled, Smart, Strategic" },
+      { name: "Ant-Man", quality: "Funny, Clever, Unlikely Hero" }
+    ];
+
+    const random = superheroes[Math.floor(Math.random() * superheroes.length)];
+    document.getElementById("superhero-name").innerHTML = `<strong>${random.name}</strong><br>${random.quality}`;
+
+    const canvas = document.getElementById("scratch-canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#999";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    let isDrawing = false;
+
+    canvas.addEventListener("mousedown", () => isDrawing = true);
+    canvas.addEventListener("mouseup", () => isDrawing = false);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchstart", () => isDrawing = true);
+    canvas.addEventListener("touchend", () => isDrawing = false);
+    canvas.addEventListener("touchmove", draw);
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches[0].clientX) - rect.left;
+      const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 15, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Show text when enough scratched
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let pixels = imageData.data;
+      let transparentPixels = 0;
+      for (let i = 3; i < pixels.length; i += 4) {
+        if (pixels[i] === 0) transparentPixels++;
+      }
+
+      if (transparentPixels > (pixels.length / 8)) {
+        document.getElementById("superhero-name").style.display = "block";
+        document.getElementById("message").style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+  </html>
